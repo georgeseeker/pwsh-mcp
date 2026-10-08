@@ -56,6 +56,23 @@ qoderclicn mcp add pwsh node "C:\path\to\pwsh-mcp\src\server.mjs" --scope user -
 }
 ```
 
+## 可选技巧：把工具名改成 `Pwsh`（qoderclicn 专属）
+
+注册后模型侧的工具名是 `mcp__pwsh__run`。qoderclicn 支持通过 `toolOverrides.exposedName`（未公开字段）换一个更顺手的暴露名，在 `~/.qoder-cn/settings.json` 的 `mcpServers.pwsh` 中加入：
+
+```json
+{
+  "toolOverrides": {
+    "run":   { "exposedName": "Pwsh",      "alwaysLoad": true },
+    "reset": { "exposedName": "PwshReset", "alwaysLoad": true }
+  }
+}
+```
+
+- `exposedName` 必须搭配 `alwaysLoad: true`；名字需匹配 `[A-Za-z0-9_-]{1,64}`，且不能与现有工具重名（如 `Bash` / `PowerShell`，冲突会导致该工具被直接隐藏）；
+- `/mcp reload`（或重启 CLI）后生效，模型即可直接以 `Pwsh(command: "...")` 调用，无需 `mcp__` 前缀的中转感；
+- **注意**：该字段未见于官方文档，CLI 升级后可能失效——失效时删除这段配置即恢复 `mcp__pwsh__run`，其余不受影响；另外实测（qoderclicn 1.1.66）改名后 UI 无法展开/展示该工具的执行结果（Ctrl+O 无效），但模型仍能正常收到结果——按需取舍。
+
 ## 工具用法
 
 ### run
